@@ -78,4 +78,25 @@ public class BookService {
         response.setAvailable(true);
         return response;
     }
+
+    // Uppdaterar en befintlig bok
+    public BookResponse updateBook(Long id, BookRequest request) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bok med id " + id + " hittades inte"));
+
+        book.setTitle(request.getTitle());
+        book.setAuthor(request.getAuthor());
+        book.setIsbn(request.getIsbn());
+        book.setPublishedYear(request.getPublishedYear());
+
+        Book updated = bookRepository.save(book);
+        return toResponse(updated);
+    }
+
+    public void deleteBook(Long id) {
+        if (!bookRepository.existsById(id)) {
+            throw new RuntimeException("Bok med id " + id + " hittades inte");
+        }
+        bookRepository.deleteById(id);
+    }
 }
